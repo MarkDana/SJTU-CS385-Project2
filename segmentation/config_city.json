@@ -1,0 +1,78 @@
+{
+    "name": "SegNet_city",
+    "n_gpu": 2,
+    "use_synch_bn": true,
+
+    "arch": {
+        "type": "SegNet",
+        "args": {
+            "backbone": "vgg16",
+            "freeze_bn": false,
+            "freeze_backbone": false
+        }
+    },
+
+    "train_loader": {
+        "type": "CityScapes",
+        "args":{
+            "data_dir": "/home/xiezhihui/data/cityscapes",
+            "batch_size": 4,
+            "base_size": 1024,
+            "crop_size": 512,
+            "augment": true,
+            "shuffle": true,
+            "scale": true,
+            "flip": true,
+            "rotate": true,
+            "blur": false,
+            "split": "train",
+            "mode": "fine",
+            "num_workers": 8
+        }
+    },
+
+    "val_loader": {
+        "type": "CityScapes",
+        "args":{
+            "data_dir": "/home/xiezhihui/data/cityscapes",
+            "batch_size": 4,
+            "val": true,
+            "split": "val",
+            "mode": "fine",
+            "num_workers": 4
+        }
+    },
+
+    "optimizer": {
+        "type": "SGD",
+        "differential_lr": true,
+        "args":{
+            "lr": 0.001,
+            "weight_decay": 1e-4,
+            "momentum": 0.9
+        }
+    },
+
+    "loss": "CrossEntropyLoss2d",
+    "ignore_index": 255,
+    "lr_scheduler": {
+        "type": "Poly",
+        "args": {}
+    },
+
+    "trainer": {
+        "epochs": 40,
+        "save_dir": "/home/xiezhihui/output/segmentation/saved/",
+        "save_period": 10,
+  
+        "monitor": "max Mean_IoU",
+        "early_stop": 10,
+        
+        "tensorboard": true,
+        "log_dir": "/home/xiezhihui/output/segmentation/runs",
+        "log_per_iter": 20,
+
+        "val": true,
+        "val_per_epochs": 5
+    }
+}
